@@ -1,0 +1,463 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>// ACCESO RESTRINGIDO — PASE VIP</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Anton&family=Bebas+Neue&family=Inter:wght@300;400;500;700;900&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
+
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  html { scroll-behavior: smooth; }
+
+  :root {
+    --bg: #000000;
+    --bg-soft: #0a0a0a;
+    --ink: #f4f4f4;
+    --ink-dim: #888;
+    --ink-faint: #444;
+    --accent: #E8FF00;
+    --accent-deep: #c9dd00;
+    --danger: #ff2b2b;
+    --line: rgba(255,255,255,0.08);
+  }
+
+  body {
+    background: var(--bg);
+    color: var(--ink);
+    font-family: 'Inter', sans-serif;
+    overflow-x: hidden;
+    -webkit-font-smoothing: antialiased;
+    line-height: 1.5;
+    position: relative;
+  }
+
+  body::before {
+    content: "";
+    position: fixed;
+    inset: 0;
+    pointer-events: none;
+    z-index: 100;
+    opacity: 0.06;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='3'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+  }
+
+  body::after {
+    content: "";
+    position: fixed;
+    inset: 0;
+    pointer-events: none;
+    z-index: 99;
+    background: repeating-linear-gradient(0deg, rgba(255,255,255,0.015) 0px, rgba(255,255,255,0.015) 1px, transparent 1px, transparent 3px);
+  }
+
+  .caution-tape {
+    background: repeating-linear-gradient(-45deg, var(--accent) 0px, var(--accent) 24px, #000 24px, #000 48px);
+    height: 32px;
+    position: relative;
+    overflow: hidden;
+  }
+  .caution-tape-text {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: rgba(0,0,0,0.55);
+    color: var(--accent);
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.3em;
+    white-space: nowrap;
+  }
+
+  .file-bar {
+    border-bottom: 1px solid var(--line);
+    padding: 14px 24px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 0.2em;
+    color: var(--ink-dim);
+    text-transform: uppercase;
+  }
+  .file-bar .blink { color: var(--accent); animation: blink 1.4s infinite; }
+  @keyframes blink { 0%, 60% { opacity: 1; } 61%, 100% { opacity: 0; } }
+
+  .wrap { max-width: 780px; margin: 0 auto; padding: 0 24px; }
+
+  .hero { padding: 80px 0 40px; text-align: center; position: relative; }
+
+  .crests {
+    position: relative;
+    height: 200px;
+    margin-bottom: 64px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 32px;
+  }
+
+  .shield {
+    width: 90px; height: 110px;
+    fill: #1a1a1a; stroke: #2a2a2a; stroke-width: 2;
+    opacity: 0.85;
+    filter: drop-shadow(0 0 12px rgba(0,0,0,0.6));
+  }
+  .shield:nth-child(1) { transform: translateY(8px) rotate(-4deg); }
+  .shield:nth-child(2) { transform: translateY(-4px); }
+  .shield:nth-child(3) { transform: translateY(8px) rotate(4deg); }
+
+  .question-mark {
+    position: absolute;
+    top: 50%; left: 50%;
+    transform: translate(-50%, -55%);
+    font-family: 'Anton', sans-serif;
+    font-size: 220px;
+    color: var(--accent);
+    line-height: 1;
+    text-shadow: 0 0 20px rgba(232,255,0,0.6), 0 0 50px rgba(232,255,0,0.4), 0 0 90px rgba(232,255,0,0.25);
+    animation: float 4s ease-in-out infinite;
+    letter-spacing: -0.05em;
+  }
+  @keyframes float {
+    0%, 100% { transform: translate(-50%, -55%) scale(1); }
+    50% { transform: translate(-50%, -60%) scale(1.04); }
+  }
+
+  .pre-title {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 12px;
+    color: var(--accent);
+    letter-spacing: 0.25em;
+    text-transform: uppercase;
+    font-weight: 700;
+    margin-bottom: 32px;
+    display: inline-block;
+    padding: 8px 16px;
+    border: 1px solid var(--accent);
+    background: rgba(232,255,0,0.05);
+  }
+
+  h1 {
+    font-family: 'Anton', sans-serif;
+    font-size: clamp(44px, 7.5vw, 88px);
+    line-height: 0.92;
+    letter-spacing: -0.01em;
+    text-transform: uppercase;
+    margin-bottom: 48px;
+    color: var(--ink);
+  }
+  h1 .hl { color: var(--accent); }
+  h1 .strike { display: inline-block; position: relative; }
+  h1 .strike::after {
+    content: "";
+    position: absolute;
+    left: -4px; right: -4px; top: 50%;
+    height: 6px;
+    background: var(--danger);
+    transform: translateY(-50%) rotate(-2deg);
+  }
+
+  .body-text { text-align: left; max-width: 620px; margin: 0 auto; padding: 24px 0 60px; }
+  .body-text p { font-size: 18px; line-height: 1.65; color: #d8d8d8; margin-bottom: 24px; font-weight: 400; }
+  .body-text p.lead { font-family: 'Bebas Neue', sans-serif; font-size: 28px; letter-spacing: 0.04em; color: var(--ink); line-height: 1.2; margin-bottom: 32px; }
+  .body-text strong { color: var(--accent); font-weight: 700; }
+  .body-text .whisper { color: var(--ink-dim); font-style: italic; }
+
+  .divider {
+    display: flex; align-items: center; gap: 16px;
+    margin: 48px 0;
+    color: var(--ink-faint);
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10px; letter-spacing: 0.3em;
+  }
+  .divider::before, .divider::after { content: ""; flex: 1; height: 1px; background: var(--line); }
+
+  .offer {
+    border: 1px solid var(--line);
+    background: linear-gradient(180deg, #0a0a0a 0%, #050505 100%);
+    padding: 40px 32px;
+    margin: 0 auto 48px;
+    max-width: 620px;
+    position: relative;
+  }
+  .offer::before {
+    content: "// PROTOCOLO DE ACCESO";
+    position: absolute; top: -10px; left: 24px;
+    background: var(--bg); padding: 0 12px;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px; color: var(--accent); letter-spacing: 0.2em;
+  }
+  .offer h3 { font-family: 'Anton', sans-serif; font-size: 28px; text-transform: uppercase; letter-spacing: 0.02em; margin-bottom: 24px; line-height: 1.1; }
+
+  .step { display: flex; gap: 20px; margin-bottom: 20px; align-items: flex-start; padding: 16px; background: rgba(255,255,255,0.02); border-left: 3px solid var(--accent); }
+  .step-num { font-family: 'Anton', sans-serif; font-size: 40px; color: var(--accent); line-height: 1; min-width: 40px; }
+  .step-text { font-size: 16px; line-height: 1.5; padding-top: 4px; }
+  .step-text a { color: var(--accent); text-decoration: underline; text-underline-offset: 4px; font-weight: 700; }
+
+  .dirty-trick {
+    border: 2px solid var(--accent);
+    padding: 28px;
+    margin: 0 auto 64px;
+    max-width: 620px;
+    background: rgba(232,255,0,0.04);
+    position: relative;
+    box-shadow: 0 0 40px rgba(232,255,0,0.08);
+  }
+  .dirty-trick-label {
+    position: absolute; top: -14px; left: 50%; transform: translateX(-50%);
+    background: var(--accent); color: #000; padding: 4px 16px;
+    font-family: 'JetBrains Mono', monospace; font-size: 11px; font-weight: 700; letter-spacing: 0.2em;
+  }
+  .dirty-trick p { font-size: 16px; line-height: 1.6; color: var(--ink); }
+  .dirty-trick strong { color: var(--accent); text-transform: uppercase; letter-spacing: 0.02em; }
+
+  .cta-zone { text-align: center; padding: 40px 0 80px; }
+  .cta-button {
+    display: inline-block;
+    background: var(--accent);
+    color: #000;
+    font-family: 'Anton', sans-serif;
+    font-size: clamp(20px, 3vw, 28px);
+    text-transform: uppercase;
+    letter-spacing: 0.02em;
+    padding: 28px 40px;
+    text-decoration: none;
+    cursor: pointer;
+    line-height: 1.1;
+    max-width: 620px;
+    width: 100%;
+    transition: all 0.2s ease;
+    animation: pulse 2.4s ease-in-out infinite;
+  }
+  @keyframes pulse {
+    0%, 100% { box-shadow: 0 0 0 4px #000, 0 0 0 6px var(--accent), 0 0 30px rgba(232,255,0,0.5), 0 0 80px rgba(232,255,0,0.3); }
+    50% { box-shadow: 0 0 0 4px #000, 0 0 0 6px var(--accent), 0 0 50px rgba(232,255,0,0.8), 0 0 120px rgba(232,255,0,0.5); }
+  }
+  .cta-button:hover {
+    transform: translateY(-3px) scale(1.01);
+    background: #fff; color: #000; animation: none;
+    box-shadow: 0 0 0 4px #000, 0 0 0 6px #fff, 0 0 60px rgba(255,255,255,0.6), 0 0 140px rgba(232,255,0,0.4);
+  }
+  .cta-button:active { transform: translateY(0) scale(0.99); }
+
+  .cta-sub { margin-top: 20px; font-family: 'JetBrains Mono', monospace; font-size: 11px; color: var(--ink-dim); letter-spacing: 0.2em; }
+
+  footer { border-top: 1px solid var(--line); padding: 32px 24px; text-align: center; color: var(--ink-faint); font-size: 12px; line-height: 1.6; font-family: 'JetBrains Mono', monospace; letter-spacing: 0.05em; }
+  footer .timestamp { color: var(--ink-dim); margin-top: 12px; font-size: 10px; letter-spacing: 0.3em; }
+
+  .reveal { opacity: 0; transform: translateY(20px); animation: revealUp 0.8s ease forwards; }
+  .reveal.d1 { animation-delay: 0.1s; }
+  .reveal.d2 { animation-delay: 0.25s; }
+  .reveal.d3 { animation-delay: 0.4s; }
+  .reveal.d4 { animation-delay: 0.55s; }
+  @keyframes revealUp { to { opacity: 1; transform: translateY(0); } }
+
+  @media (max-width: 600px) {
+    .crests { gap: 16px; height: 160px; margin-bottom: 40px; }
+    .shield { width: 70px; height: 86px; }
+    .question-mark { font-size: 160px; }
+    .body-text p { font-size: 17px; }
+    .body-text p.lead { font-size: 22px; }
+    .offer, .dirty-trick { padding: 24px 18px; }
+    .cta-button { padding: 24px 24px; font-size: 18px; }
+    .file-bar { font-size: 9px; padding: 10px 16px; }
+  }
+</style>
+</head>
+<body>
+
+<div class="caution-tape">
+  <div class="caution-tape-text">⚠ DOCUMENTO CLASIFICADO ⚠ NIVEL DE ACCESO 03 ⚠ JORNADA MATUTINA ÚNICAMENTE ⚠ DOCUMENTO CLASIFICADO ⚠</div>
+</div>
+
+<div class="file-bar">
+  <span>FILE_No. 2025-IC-VIP-007</span>
+  <span><span class="blink">●</span> TRANSMISIÓN ACTIVA</span>
+</div>
+
+<section class="hero">
+  <div class="wrap">
+    <div class="crests reveal d1">
+      <svg class="shield" viewBox="0 0 90 110" xmlns="http://www.w3.org/2000/svg">
+        <path d="M5 10 L45 0 L85 10 L85 60 Q85 95 45 110 Q5 95 5 60 Z"/>
+      </svg>
+      <svg class="shield" viewBox="0 0 90 110" xmlns="http://www.w3.org/2000/svg">
+        <path d="M5 10 L45 0 L85 10 L85 60 Q85 95 45 110 Q5 95 5 60 Z"/>
+      </svg>
+      <svg class="shield" viewBox="0 0 90 110" xmlns="http://www.w3.org/2000/svg">
+        <path d="M5 10 L45 0 L85 10 L85 60 Q85 95 45 110 Q5 95 5 60 Z"/>
+      </svg>
+      <div class="question-mark">?</div>
+    </div>
+
+    <div class="pre-title reveal d2">⚠ ACCESO RESTRINGIDO · INFO CLASIFICADA · JORNADA MATUTINA</div>
+
+    <h1 class="reveal d3">
+      El enfrentamiento <span class="hl">más brutal</span> del año será a <span class="hl">puerta cerrada.</span>
+      <br><br>
+      Colegios rivales vienen en secreto…<br>
+      y lo más probable es que <span class="strike">tu curso</span> se quede afuera.
+    </h1>
+  </div>
+</section>
+
+<section class="wrap">
+  <div class="body-text reveal d4">
+    <p class="lead">Imagínate esto:</p>
+    <p>El resto del colegio está encerrado en sus aulas, aburridos en una clase normal.</p>
+    <p>Pero <strong>tú y tu curso acaban de recibir el Pase VIP.</strong> Se saltan las clases. Entran por la puerta grande al auditorio y se sientan en primera fila.</p>
+    <p>¿Para qué? Para presenciar el evento intercolegial más exclusivo de la <strong>Fiesta de la Lectura</strong>. Relatos, interpretaciones y una competencia cruda contra instituciones rivales cuyas identidades nos han exigido mantener en absoluto secreto.</p>
+    <div class="divider"><span>// CONFIDENCIAL</span></div>
+    <p class="whisper">Nadie sabe quiénes son.<br>Nadie sabe qué traen.<br>Y casi nadie los va a ver.</p>
+    <p>El problema es este: <strong>las puertas estarán blindadas.</strong> No hay venta de entradas. No hay invitaciones especiales.</p>
+    <p>Solo <strong>DOS CURSOS</strong> van a ganar el derecho absoluto de estar ahí adentro. El resto del colegio simplemente escuchará los rumores al día siguiente.</p>
+    <p>¿Tu curso tiene lo que se necesita para <strong>aplastar a los demás paralelos</strong> y llevarse uno de los dos cupos?</p>
+  </div>
+</section>
+
+<section class="wrap">
+  <div class="offer">
+    <h3>Cómo entrar a la lista</h3>
+    <p style="color: var(--ink-dim); margin-bottom: 24px; font-size: 15px;">No cuesta dinero. Pero exige acción inmediata.</p>
+
+    <div class="step">
+      <div class="step-num">01</div>
+      <div class="step-text">
+        Toca aquí y sigue nuestra cuenta en Instagram:<br>
+        <a href="https://www.instagram.com/voces.azules_mc?igsh=MWJ0MGV3b2x2c25rNQ==" target="_blank" rel="noopener">@voces.azules_mc</a>
+      </div>
+    </div>
+
+    <div class="step">
+      <div class="step-num">02</div>
+      <div class="step-text">
+        Toca el botón de abajo para entrar a la <strong style="color:var(--accent)">bóveda</strong> y registrar a tu curso.
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="wrap">
+  <div class="dirty-trick">
+    <div class="dirty-trick-label">🔥 EL TRUCO SUCIO</div>
+    <p>Esto es <strong>matemática pura</strong>. Mientras más compañeros de tu mismo curso entren al enlace y se registren, sus probabilidades de destruir a los otros cursos y ganar el Pase VIP se multiplican.</p>
+    <br>
+    <p style="color: var(--accent); font-family: 'Bebas Neue'; font-size: 22px; letter-spacing: 0.04em; line-height: 1.2;">Mándales el link de esta página al grupo de WhatsApp de tu clase AHORA MISMO.</p>
+  </div>
+</section>
+
+<section class="wrap">
+  <div class="cta-zone">
+    <a href="https://docs.google.com/forms/d/e/1FAIpQLScCeP5mEIug4ZcGTl8FlJwenkWAxLDNd-DnPJz1kA3qA09nBw/viewform?usp=dialog"
+       target="_blank"
+       rel="noopener"
+       class="cta-button">
+      🚨 ENTRAR A LA BÓVEDA Y RECLAMAR EL PASE VIP PARA MI CURSO
+    </a>
+    <div class="cta-sub">// REDIRECCIÓN SEGURA · SSL · SOLO 2 CURSOS</div>
+  </div>
+</section>
+
+<section class="wrap">
+  <div style="text-align:center; padding: 60px 0 40px; max-width: 620px; margin: 0 auto;">
+    <div style="font-family:'JetBrains Mono',monospace; font-size:11px; color:var(--ink-dim); letter-spacing:0.3em; margin-bottom:16px;">// CUENTA REGRESIVA CLASIFICADA</div>
+    <div style="font-family:'Bebas Neue',sans-serif; font-size:clamp(18px,3vw,24px); color:var(--ink); letter-spacing:0.06em; margin-bottom:32px; line-height:1.4;">
+      El curso ganador será anunciado en nuestro Instagram.<br>
+      <span style="color:var(--accent);">Los que no estén dentro... se enterarán por rumores.</span>
+    </div>
+    <div id="countdown" style="display:flex; justify-content:center; gap:16px; flex-wrap:wrap;">
+      <div class="cd-block"><span class="cd-num" id="cd-dias">00</span><span class="cd-label">DÍAS</span></div>
+      <div class="cd-sep">:</div>
+      <div class="cd-block"><span class="cd-num" id="cd-horas">00</span><span class="cd-label">HORAS</span></div>
+      <div class="cd-sep">:</div>
+      <div class="cd-block"><span class="cd-num" id="cd-mins">00</span><span class="cd-label">MIN</span></div>
+      <div class="cd-sep">:</div>
+      <div class="cd-block"><span class="cd-num" id="cd-segs">00</span><span class="cd-label">SEG</span></div>
+    </div>
+    <div style="margin-top:28px; font-family:'JetBrains Mono',monospace; font-size:11px; color:var(--danger); letter-spacing:0.2em; animation: blink 1.4s infinite;">
+      ⚠ CADA SEGUNDO QUE PASA ES UN COMPAÑERO DE OTRO CURSO REGISTRÁNDOSE
+    </div>
+  </div>
+</section>
+
+<style>
+  .cd-block { display:flex; flex-direction:column; align-items:center; }
+  .cd-num {
+    font-family:'Anton',sans-serif;
+    font-size: clamp(56px, 10vw, 96px);
+    color: var(--accent);
+    line-height: 1;
+    text-shadow: 0 0 20px rgba(232,255,0,0.5), 0 0 50px rgba(232,255,0,0.3);
+  }
+  .cd-label {
+    font-family:'JetBrains Mono',monospace;
+    font-size:10px;
+    letter-spacing:0.3em;
+    color:var(--ink-dim);
+    margin-top:6px;
+  }
+  .cd-sep {
+    font-family:'Anton',sans-serif;
+    font-size: clamp(48px, 8vw, 80px);
+    color:var(--ink-faint);
+    line-height:1;
+    padding-top: 4px;
+  }
+</style>
+
+<footer>
+  El contador está corriendo. El acceso al formulario se bloqueará en cuanto la base de datos alcance el límite de seguridad.<br>
+  Los 2 cursos ganadores serán revelados únicamente por nuestro Instagram.
+  <div class="timestamp">// SISTEMA SINCRONIZADO · <span id="ts"></span></div>
+  <div style="margin-top: 24px; font-size: 10px; letter-spacing: 0.2em; color: var(--ink-faint);">
+    SISTEMA DISEÑADO POR EL CEO DE AXELDYNAMICS — <a href="https://www.linkedin.com/in/roddysornozaagentesia?utm_source=share_via&utm_content=profile&utm_medium=member_android" target="_blank" rel="noopener" style="color: var(--ink-dim); text-decoration: underline; text-underline-offset: 4px; font-weight: 700;">[REDACTED]</a> · 2026
+  </div>
+</footer>
+
+<script>
+  // Countdown al 27 de mayo 2026 medianoche (Ecuador UTC-5)
+  function updateCountdown() {
+    const target = new Date('2026-05-28T05:00:00Z');
+    const now = new Date();
+    const diff = target - now;
+
+    if (diff <= 0) {
+      document.getElementById('countdown').innerHTML =
+        '<div style="font-family:\'Anton\',sans-serif;font-size:48px;color:var(--accent);">EL MOMENTO LLEGÓ</div>';
+      return;
+    }
+
+    const dias  = Math.floor(diff / (1000*60*60*24));
+    const horas = Math.floor((diff % (1000*60*60*24)) / (1000*60*60));
+    const mins  = Math.floor((diff % (1000*60*60)) / (1000*60));
+    const segs  = Math.floor((diff % (1000*60)) / 1000);
+
+    const pad = n => String(n).padStart(2,'0');
+    document.getElementById('cd-dias').textContent  = pad(dias);
+    document.getElementById('cd-horas').textContent = pad(horas);
+    document.getElementById('cd-mins').textContent  = pad(mins);
+    document.getElementById('cd-segs').textContent  = pad(segs);
+  }
+  updateCountdown();
+  setInterval(updateCountdown, 1000);
+
+  // Timestamp footer
+  function updateTS() {
+    const d = new Date();
+    const pad = n => String(n).padStart(2, '0');
+    document.getElementById('ts').textContent =
+      `${d.getFullYear()}.${pad(d.getMonth()+1)}.${pad(d.getDate())} · ${pad(d.getHours())}:${pad(d.getMinutes())}:${pad(d.getSeconds())}`;
+  }
+  updateTS();
+  setInterval(updateTS, 1000);
+</script>
+
+</body>
+</html>
